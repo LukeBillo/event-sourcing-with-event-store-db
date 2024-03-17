@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.WithoutAggreg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.EventStoreDB.Common", "EventSourcing.EventStoreDB.Common\EventSourcing.EventStoreDB.Common.csproj", "{F2B2F016-D41C-4864-8BA2-D8C40C5C5662}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventSourcing.Aggregates.API", "EventSourcing.Aggregates.API\EventSourcing.Aggregates.API.csproj", "{37D766AB-11DE-4702-A40C-6648F289FDF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F2B2F016-D41C-4864-8BA2-D8C40C5C5662}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2B2F016-D41C-4864-8BA2-D8C40C5C5662}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2B2F016-D41C-4864-8BA2-D8C40C5C5662}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37D766AB-11DE-4702-A40C-6648F289FDF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37D766AB-11DE-4702-A40C-6648F289FDF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37D766AB-11DE-4702-A40C-6648F289FDF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37D766AB-11DE-4702-A40C-6648F289FDF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

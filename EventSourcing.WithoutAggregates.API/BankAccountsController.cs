@@ -3,6 +3,7 @@ using EventSourcing.WithoutAggregates.API.Data.EventStore;
 using EventSourcing.WithoutAggregates.API.Data.Sql;
 using EventSourcing.WithoutAggregates.API.Requests;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventSourcing.WithoutAggregates.API;
 
@@ -16,6 +17,16 @@ public class BankAccountsController : ControllerBase
     {
         _bankAccountContext = bankAccountContext;
         _eventStore = eventStore;
+    }
+
+    [HttpGet("/bank-accounts/{id}")]
+    public async Task<IActionResult> GetBankAccount([FromRoute] string id)
+    {
+        var bankAccount = await _bankAccountContext.BankAccounts.FirstOrDefaultAsync(account => account.Id == id);
+
+        return bankAccount is not null ?
+            Ok(bankAccount) :
+            NotFound();
     }
 
     [HttpPost("/bank-accounts")]
@@ -40,21 +51,23 @@ public class BankAccountsController : ControllerBase
         return Ok(new { Id = id });
     }
 
-    [HttpPatch("/bank-accounts/{id}")]
-    public async Task<IActionResult> AddBankAccount([FromRoute] string id, [FromBody] AddBankAccountRequest request)
+    [HttpPost("/bank-accounts/{id}/actions/deposit")]
+    public async Task<IActionResult> DepositCash([FromRoute] string id, [FromBody] DepositRequest request)
     {
-        var bankAccount = new BankAccount
+        var bankAccount = await _bankAccountContext.BankAccounts.SingleOrDefaultAsync(account => account.Id == id);
+
+        if (bankAccount is null)
         {
-            Id = id,
-            Name = request.Name,
-            Balance = 0.0m,
-        };
+            return BadRequest();
+        }
 
-        await _bankAccountContext.BankAccounts.AddAsync(bankAccount);
+        bankAccount.Balance += request.Amount;
 
-        var @event = BankAccountAdded.From(bankAccount);
+        _bankAccountContext.BankAccounts.Update(bankAccount);
+
+        var @event = CashDeposited.From(bankAccount, request.Amount);
         await _eventStore.WriteEvents(@event.Stream, new [] { @event });
 
-        return Ok(new { Id = id });
+        return Ok(new { bankAccount.Balance });
     }
 }
