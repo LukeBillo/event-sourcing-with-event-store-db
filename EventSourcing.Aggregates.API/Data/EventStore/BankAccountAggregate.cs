@@ -43,6 +43,11 @@ public class BankAccountAggregate
 
     public void DepositCash(decimal amount)
     {
+        if (State.Status is not BankAccountStatus.Open)
+        {
+            throw new InvalidOperationException($"The bank account with ID {State.Id} is not {BankAccountStatus.Open:F}");
+        }
+
         var updatedBalance = State.Balance + amount;
         var @event = new CashDeposited(State.Id, amount, State.Balance, updatedBalance)
         {
