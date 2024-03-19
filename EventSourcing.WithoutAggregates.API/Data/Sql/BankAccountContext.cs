@@ -2,14 +2,12 @@
 
 namespace EventSourcing.WithoutAggregates.API.Data.Sql;
 
-public class BankAccountContext : DbContext
+public sealed class BankAccountContext : DbContext
 {
     public DbSet<BankAccount> BankAccounts { get; set; }
 
-    public BankAccountContext(DbContextOptions<BankAccountContext> options) : base(options) {}
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public BankAccountContext(DbContextOptions<BankAccountContext> options) : base(options)
     {
-        modelBuilder.Entity<BankAccount>().ToTable(BankAccount.Table);
+        Database.EnsureCreated();
     }
 }

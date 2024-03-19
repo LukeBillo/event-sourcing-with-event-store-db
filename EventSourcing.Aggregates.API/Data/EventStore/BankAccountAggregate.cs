@@ -12,10 +12,12 @@ public class BankAccountAggregate
 
     public BankAccountState State { get; private set; }
 
-    public BankAccountAggregate(IEnumerable<Event> loadedEvents)
+    public BankAccountAggregate(string id, IEnumerable<Event> loadedEvents)
     {
         ExistingEvents = loadedEvents.ToImmutableList();
         NewEvents = new List<Event>();
+
+        State = BankAccountState.Initial(id);
 
         foreach (var @event in ExistingEvents)
         {
@@ -43,6 +45,11 @@ public class BankAccountAggregate
 
     public void DepositCash(decimal amount)
     {
+        if (State is null)
+        {
+            throw new InvalidOperationException("The bank account does not exist");
+        }
+
         if (State.Status is not BankAccountStatus.Open)
         {
             throw new InvalidOperationException($"The bank account with ID {State.Id} is not {BankAccountStatus.Open:F}");
@@ -88,7 +95,7 @@ public class BankAccountAggregate
 
     private BankAccountState ApplyCashDeposited(CashDeposited depositEvent)
     {
-        return State with
+        return State! with
         {
             Balance = depositEvent.UpdatedBalance
         };

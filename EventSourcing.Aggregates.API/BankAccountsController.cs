@@ -50,7 +50,7 @@ public class BankAccountsController : ControllerBase
     private async Task<BankAccountAggregate> LoadAggregate(string id)
     {
         var events = await _eventStore.GetEvents($"{StreamNames.BankAccounts}-{id}");
-        return new BankAccountAggregate(events);
+        return new BankAccountAggregate(id, events);
     }
 
     private async Task SaveAggregate(BankAccountAggregate aggregate)

@@ -23,8 +23,8 @@ public record CashDeposited : Event
     public static CashDeposited From(BankAccount bankAccount, decimal depositAmount) => new(
         bankAccount.Id,
         depositAmount,
-        bankAccount.Balance,
-        bankAccount.Balance + depositAmount)
+        bankAccount.Balance - depositAmount,
+        bankAccount.Balance)
     {
         Timestamp = DateTime.UtcNow
     };

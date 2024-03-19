@@ -44,6 +44,7 @@ public class BankAccountsController : ControllerBase
         };
 
         await _bankAccountContext.BankAccounts.AddAsync(bankAccount);
+        await _bankAccountContext.SaveChangesAsync();
 
         var @event = BankAccountAdded.From(bankAccount);
         await _eventStore.WriteEvents(@event.Stream, new [] { @event });
@@ -64,6 +65,7 @@ public class BankAccountsController : ControllerBase
         bankAccount.Balance += request.Amount;
 
         _bankAccountContext.BankAccounts.Update(bankAccount);
+        await _bankAccountContext.SaveChangesAsync();
 
         var @event = CashDeposited.From(bankAccount, request.Amount);
         await _eventStore.WriteEvents(@event.Stream, new [] { @event });
